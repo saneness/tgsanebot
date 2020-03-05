@@ -9,12 +9,29 @@ import psutil
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/tgsanebot.log', filemode='w+')
 
+# Utils
 class Utils:
+    # Pre
     def pre(text):
         return '```\n' + text + '\n```'
-    def table(array, widths, header):
-        pass
 
+    # Table
+    def table(array, header=None, widths=None):
+        n = len(array[0])
+        print(n)
+        if not widths:
+             widths = [12] * n
+        print(widths)
+        if header:
+            table = ['|'.join([f' {header[i]:{widths[i]}s}' for i in range(n)])]
+            table += ['|'.join(['-' * (widths[i] + 1) for i in range(n)])]
+        else:
+            table = []
+        for item in array:
+            table += ['|'.join([f' {item[i]:{widths[i]}s}' for i in range(n)])]
+        return '\n'.join(table)
+
+# Handlers
 def rrc(update, context):
     if update.message.from_user.username == 'saneness':
         command = ' '.join(context.args)
@@ -46,10 +63,12 @@ def system(update, context):
     disk_used = disk.used / 1024 / 1024 / 1024
     disk_total = disk.total / 1024 / 1024 / 1024
     
-    text = 'MEMORY\n Used: {memory_used:6.2f} MB\n Total: {memory_total:6.2f} MB \n' \
-           'DISK  \n Used: {disk_used:6.2f} GB  \n Total: {disk_total:6.2f} GB'  \
-           ''.format(memory_used=memory_used, memory_total=memory_total,
-                     disk_used=disk_used, disk_total=disk_total)
+    system_status = [
+        ['memory', f'{memory_used:.2f} / {memory_total:.2f} MB'],
+        ['disk', f'{disk_used:.2f} / {disk_total:.2f} GB']
+    ]
+
+    text = Utils.table(system_status, header=['system', 'status'], widths=[8, 18])
 
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
@@ -63,18 +82,15 @@ def service(update, context):
     status = {'0': 'running', '1': 'error', '3': 'stopped'}
 
     service_list = ['nginx', 'apache2', 'privoxy', 'mtproxy', 'openvpn', 'tgsanebot']
-    service_status = {service: status[get_status(service)] for service in service_list}
-    
-    text = row(['service   ', 'status    '])
-    text += row(['----------', '----------'])
-    for service in service_list:
-        text += row(['{:10s}'.format(service), '{:10s}'.format(service_status[service])])
+    service_status = [[service, status[get_status(service)]] for service in service_list]
+    text = Utils.table(service_status, header=['service', 'status'])
 
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
+# Main
 def main():
     with open('.token') as f:
-        token = f.read()
+        token = f.read().strip()
     updater = Updater(token=token, use_context=True)
     dispatcher = updater.dispatcher
 
