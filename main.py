@@ -35,8 +35,11 @@ def rrc(update, context):
     if update.message.from_user.username == 'saneness':
         if len(context.args) > 0:
             command = ' '.join(context.args)
-            result = subprocess.check_output(context.args).decode('utf-8')
-            text = '$ ' + '\n'.join([command, result])
+            try:
+                result = subprocess.check_output(context.args).decode('utf-8')
+                text = '$ ' + '\n'.join([command, result])
+            except:
+                text = '$ ' + '\n'.join([command, 'Error.'])
         else:
             text = 'Empty command. Nothing to do.'
     else:
@@ -91,7 +94,7 @@ def service(update, context):
 
     status = {'0': 'running', '1': 'error', '3': 'stopped'}
 
-    service_list = ['nginx', 'apache2', 'privoxy', 'mtproxy', 'openvpn', 'tgsanebot']
+    service_list = ['nginx', 'apache2', 'mtproxy', 'openvpn', 'tgsanebot']
     service_status = [[service, status[get_status(service)]] for service in service_list]
     text = Utils.table(service_status, header=['service', 'status'])
 
