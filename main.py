@@ -36,10 +36,14 @@ def rrc(update, context):
         if len(context.args) > 0:
             command = ' '.join(context.args)
             try:
-                result = subprocess.check_output(context.args).decode('utf-8')
+                result = subprocess.check_output(context.args, stderr=subprocess.STDOUT).decode('utf-8')
                 text = '$ ' + '\n'.join([command, result])
+            except subprocess.CalledProcessError as err:
+                text = '$ ' + '\n'.join([command, err.output.decode('utf-8')])
+            except Exception as err:
+                text = '$ ' + '\n'.join([command, str(err)])
             except:
-                text = '$ ' + '\n'.join([command, 'Error.'])
+                text = '$ ' + '\n'.join([command, 'Something went wrong.'])
         else:
             text = 'Empty command. Nothing to do.'
     else:
