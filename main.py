@@ -19,7 +19,7 @@ class Utils:
         n = len(array[0])
         print(n)
         if not widths:
-             widths = [12] * n
+             widths = [16] * n
         print(widths)
         if header:
             table = ['|'.join([f' {header[i]:{widths[i]}s}' for i in range(n)])]
@@ -98,7 +98,7 @@ def service(update, context):
 
     status = {'0': 'running', '1': 'error', '3': 'stopped'}
 
-    service_list = ['nginx', 'apache2', 'mtproxy', 'openvpn', 'tgsanebot']
+    service_list = ['nginx', 'apache2', 'mtproxy-faketls', 'openvpn', 'tgsanebot']
     service_status = [[service, status[get_status(service)]] for service in service_list]
     text = Utils.table(service_status, header=['service', 'status'])
 
