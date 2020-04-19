@@ -17,10 +17,6 @@ class Utils:
     # Table
     def table(array, header=None, widths=None):
         n = len(array[0])
-        print(n)
-        if not widths:
-             widths = [16] * n
-        print(widths)
         if header:
             table = ['|'.join([f' {header[i]:{widths[i]}s}' for i in range(n)])]
             table += ['|'.join(['-' * (widths[i] + 1) for i in range(n)])]
@@ -100,7 +96,7 @@ def service(update, context):
 
     service_list = ['nginx', 'apache2', 'mtproxy-faketls', 'openvpn', 'tgsanebot']
     service_status = [[service, status[get_status(service)]] for service in service_list]
-    text = Utils.table(service_status, header=['service', 'status'])
+    text = Utils.table(service_status, header=['service', 'status'], widths=[16, 10])
 
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
