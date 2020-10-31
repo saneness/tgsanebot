@@ -108,7 +108,7 @@ def service(update, context):
 def download_photo(update, context):
     if update.message.from_user.username in DOWNLOAD_USERS:
         file_data = context.bot.get_file(update.message.photo[len(update.message.photo) - 1].file_id)
-        src = '/root/downloads/tgsanebot/photo/' + update.message.photo[1].file_id
+        src = '/root/downloads/tgsanebot/photo/' + update.message.photo[1].file_id + '.jpg'
         file_data.download(src)
     
         text = 'Download complete!'
