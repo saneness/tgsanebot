@@ -11,7 +11,7 @@ import psutil
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/tgsanebot.log', filemode='w+')
 
 ADMIN_USERS = ['saneness']
-DOWNLOAD_USERS = ['saneness', 'protosaaph']
+DOWNLOAD_USERS = ['saneness', 'protosaaph', 'dzakharova', 'akhneva']
 
 # Utils
 class Utils:
