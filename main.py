@@ -1,8 +1,10 @@
+import time
 import json
 import logging
 import telegram
 import subprocess
-from telegram.ext import Updater, CommandHandler
+from telegram import bot
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 import psutil
 
@@ -100,6 +102,20 @@ def service(update, context):
 
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
+def download_photo(update, context):
+    file_data = context.bot.get_file(update.message.photo[len(update.message.photo) - 1].file_id)
+    src = '/root/downloads/tgsanebot/photo/' + update.message.photo[1].file_id
+    file_data.download(src)
+    
+    text = 'Download complete!'
+
+    context.bot.delete_message(chat_id=update.message.chat_id,
+                               message_id=update.message.message_id)
+    reply = context.bot.send_message(chat_id=update.message.chat_id, text=text)
+    time.sleep(0.5)
+    context.bot.delete_message(chat_id=update.message.chat_id,
+                               message_id=reply.message_id)
+
 # Main
 def main():
     with open('.token') as f:
@@ -113,6 +129,8 @@ def main():
     dispatcher.add_handler(CommandHandler('help', help))
     dispatcher.add_handler(CommandHandler('system', system))
     dispatcher.add_handler(CommandHandler('service', service))
+
+    dispatcher.add_handler(MessageHandler(Filters.photo, download_photo));
 
     updater.start_polling()
 
