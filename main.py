@@ -10,6 +10,9 @@ import psutil
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/tgsanebot.log', filemode='w+')
 
+ADMIN_USERS = ['saneness']
+DOWNLOAD_USERS = ['saneness', 'protosaaph']
+
 # Utils
 class Utils:
     # Pre
@@ -30,7 +33,7 @@ class Utils:
 
 # Handlers
 def rrc(update, context):
-    if update.message.from_user.username == 'saneness':
+    if update.message.from_user.username in ADMIN_USERS:
         if len(context.args) > 0:
             command = ' '.join(context.args)
             try:
@@ -103,18 +106,22 @@ def service(update, context):
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
 def download_photo(update, context):
-    file_data = context.bot.get_file(update.message.photo[len(update.message.photo) - 1].file_id)
-    src = '/root/downloads/tgsanebot/photo/' + update.message.photo[1].file_id
-    file_data.download(src)
+    if update.message.from_user.username in DOWNLOAD_USERS:
+        file_data = context.bot.get_file(update.message.photo[len(update.message.photo) - 1].file_id)
+        src = '/root/downloads/tgsanebot/photo/' + update.message.photo[1].file_id
+        file_data.download(src)
     
-    text = 'Download complete!'
+        text = 'Download complete!'
 
-    context.bot.delete_message(chat_id=update.message.chat_id,
-                               message_id=update.message.message_id)
-    reply = context.bot.send_message(chat_id=update.message.chat_id, text=text)
-    time.sleep(0.5)
-    context.bot.delete_message(chat_id=update.message.chat_id,
-                               message_id=reply.message_id)
+        context.bot.delete_message(chat_id=update.message.chat_id,
+                                   message_id=update.message.message_id)
+        reply = context.bot.send_message(chat_id=update.message.chat_id, text=text)
+        time.sleep(0.5)
+        context.bot.delete_message(chat_id=update.message.chat_id,
+                                   message_id=reply.message_id)
+    else:
+        text = 'Permission denied.'
+        context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
 # Main
 def main():
