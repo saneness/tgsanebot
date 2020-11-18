@@ -17,12 +17,14 @@ ADMIN_IDS = [
 ]
 FAMILY_IDS = {
     430673891: 'saneness',  # AZ
-    173715757: 'saaph'  # UV
+    223967292: 'saaph'  # UV
     # 769506446  # DZ
     # 430673891,  # AA
     # 279002221   # DI
 }
 MAX_DISK_USAGE = 90
+FILE_ROOT = '/var/www/saaph.online/uploads'
+DOMAIN_ROOT = 'https://saaph.online/uploads'
 
 class Utils:
     @staticmethod
@@ -45,10 +47,10 @@ class Utils:
 def admin(func):
     @wraps(func)
     def wrapper(update, context, *args, **kwargs):
-        user_id = update.message.from_user.id
-        if user_id not in ADMIN_IDS:
+        chat_id = update.message.chat_id
+        if chat_id not in ADMIN_IDS:
             text = 'Permission denied.'
-            context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
+            context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
             return
         return func(update, context, *args, **kwargs)
     return wrapper
@@ -56,10 +58,10 @@ def admin(func):
 def family(func):
     @wraps(func)
     def wrapper(update, context, *args, **kwargs):
-        user_id = update.message.from_user.id
-        if user_id not in FAMILY_IDS:
+        chat_id = update.message.chat_id
+        if chat_id not in FAMILY_IDS:
             text = 'Permission denied.'
-            context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
+            context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
             return
         return func(update, context, *args, **kwargs)
     return wrapper
@@ -124,18 +126,62 @@ def upload(update, context):
         file_id = update.message.effective_attachment.file_id
         file_name = update.message.effective_attachment.file_name.replace(' ', '_')
         file_data = context.bot.get_file(file_id)
-        if not os.path.exists(f'/var/www/saaph.online/uploads/{username}//'):
-            os.makedirs(f'/var/www/saaph.online/uploads/{username}/')
-        file_path = f'/var/www/saaph.online/uploads/{username}/{file_name}'
+        if not os.path.exists(f'{FILE_ROOT}/{username}/'):
+            os.makedirs(f'{FILE_ROOT}/{username}/')
+        file_path = f'{FILE_ROOT}/{username}/{file_name}'
         file_data.download(file_path)
         text = 'Upload complete!\n' \
-            f'Your file location: https://saaph.online/uploads/{username}/{file_name}'
+            f'Your file location: {DOMAIN_ROOT}/{username}/{file_name}'
         context.bot.delete_message(chat_id=chat_id,
                                     message_id=message_id)
-        context.bot.send_message(chat_id=chat_id, text=text)
+        context.bot.send_message(chat_id=chat_id, text=text, disable_web_page_preview=True)
     else:
-        text = f'Disk usage is over {MAX_DISK_USAGE}%. Please ask the administrator to free some space before trying again.'
+        text = f'Disk usage is over {MAX_DISK_USAGE}%. Please ask the administrator to free some space before trying again!'
         context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
+
+@family
+def files(update, context):
+    chat_id = update.message.chat_id
+    username = FAMILY_IDS[chat_id]
+    file_path = f'{FILE_ROOT}/{username}'
+    files = os.listdir(file_path)
+    if len(files) > 0:
+        text = 'Your files available:\n'
+        for i, file in enumerate(files, start=1):
+            text += f'`({i})` [{file}]({DOMAIN_ROOT}/{username}/{file})\n'
+    else:
+        text = 'Sorry, you have no uploaded files!'
+    context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN, disable_web_page_preview=True)
+
+@family
+def delete(update, context):
+    chat_id = update.message.chat_id
+    username = FAMILY_IDS[chat_id]
+    file_path = f'{FILE_ROOT}/{username}'
+    files = os.listdir(file_path)
+    if len(files) > 0:
+        if len(context.args) > 0:
+            files_not_found = []
+            files_found = []
+            for arg in context.args:
+                if arg not in [str(i) for i in range(1, len(files) + 1)]:
+                    files_not_found.append(arg)
+                else:
+                    files_found.append(files[int(arg) - 1])
+            if len(files_not_found) > 0:
+                text = 'Can\'t find files with indexes: ' + ' '.join(files_not_found) + '.\nNothing has been removed!'
+                context.bot.send_message(chat_id=update.message.chat_id, text=text)
+            else:
+                for file in files_found:
+                    os.remove(f'{FILE_ROOT}/{username}/{file}')
+                text = 'Deleted files:\n`* ' + '`\n`* '.join(files_found) + '`'
+                context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+        else:
+            text = 'Please use following format: `/delete {index}`'
+            context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+    else:
+        text = 'Sorry, you have no uploaded files!'
+        context.bot.send_message(chat_id=update.message.chat_id, text=text)
 
 
 def main():
@@ -148,6 +194,8 @@ def main():
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(CommandHandler('system', system))
     dispatcher.add_handler(CommandHandler('service', service))
+    dispatcher.add_handler(CommandHandler('files', files))
+    dispatcher.add_handler(CommandHandler('delete', delete))
     dispatcher.add_handler(MessageHandler(Filters.document, upload));
     updater.start_polling()
 
