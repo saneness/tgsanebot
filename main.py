@@ -17,10 +17,10 @@ ADMIN_IDS = [
 ]
 FAMILY_IDS = {
     430673891: 'saneness',  # AZ
-    223967292: 'saaph'  # UV
+    223967292: 'saaph',  # UV
     # 769506446  # DZ
     # 430673891,  # AA
-    # 279002221   # DI
+    279002221: 'ihniwtfiad'   # DI
 }
 MAX_DISK_USAGE = 90
 FILE_ROOT = '/var/www/saaph.online/uploads'
@@ -111,7 +111,7 @@ def service(update, context):
         return str(subprocess.call(['systemctl', 'is-active', '--quiet', service]))
 
     status = {'0': 'running', '1': 'error', '3': 'stopped'}
-    service_list = ['nginx', 'apache2', 'mtproxy-faketls', 'openvpn', 'tgsanebot']
+    service_list = ['nginx', 'mtproxy-faketls', 'openvpn', 'tgsanebot']
     service_status = [[service, status[get_status(service)]] for service in service_list]
     text = Utils.table(service_status, header=['service', 'status'], widths=[16, 10])
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
