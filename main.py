@@ -17,10 +17,10 @@ ADMIN_IDS = [
 ]
 FAMILY_IDS = {
     430673891: 'saneness',  # AZ
-    223967292: 'saaph',  # UV
-    # 769506446  # DZ
-    # 430673891,  # AA
-    279002221: 'ihniwtfiad'   # DI
+    223967292: 'saaph',     # UV
+#    769506446: 'testetrap', # DZ
+#     430673891, 'akhneva',  # AA
+    279002221: 'ihniwtfiad' # DI
 }
 MAX_DISK_USAGE = 90
 FILE_ROOT = '/var/www/saaph.online/uploads'
