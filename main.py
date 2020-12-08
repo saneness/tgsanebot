@@ -1,30 +1,16 @@
 import os
 import time
 import json
+import psutil
 import logging
 import telegram
 import subprocess
 from telegram import bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from functools import wraps
-
-import psutil
+from config import *
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/tgsanebot.log', filemode='w+')
-
-ADMIN_IDS = [
-    430673891   # AZ
-]
-FAMILY_IDS = {
-    430673891: 'saneness',  # AZ
-    223967292: 'saaph',     # UV
-#    769506446: 'testetrap', # DZ
-#     430673891, 'akhneva',  # AA
-    279002221: 'ihniwtfiad' # DI
-}
-MAX_DISK_USAGE = 90
-FILE_ROOT = '/var/www/saaph.online/uploads'
-DOMAIN_ROOT = 'https://saaph.online/uploads'
 
 class Utils:
     @staticmethod
