@@ -97,9 +97,9 @@ def service(update, context):
         return str(subprocess.call(['systemctl', 'is-active', '--quiet', service]))
 
     status = {'0': 'running', '1': 'error', '3': 'stopped'}
-    service_list = ['nginx', 'mtproxy-faketls', 'openvpn', 'tgsanebot']
+    service_list = ['nginx', 'openvpn', 'tgsanebot']
     service_status = [[service, status[get_status(service)]] for service in service_list]
-    text = Utils.table(service_status, header=['service', 'status'], widths=[16, 10])
+    text = Utils.table(service_status, header=['service', 'status'], widths=[12, 10])
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
 @family
