@@ -207,7 +207,7 @@ def main():
     dispatcher.add_handler(CommandHandler('files', files))
     dispatcher.add_handler(CommandHandler('delete', delete))
     dispatcher.add_handler(CommandHandler('rename', rename))
-    dispatcher.add_handler(MessageHandler(Filters.document, upload));
+    dispatcher.add_handler(MessageHandler(Filters.document, upload))
     updater.start_polling()
 
 if __name__ == '__main__':
