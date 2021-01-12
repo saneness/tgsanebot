@@ -169,6 +169,30 @@ def delete(update, context):
         text = 'Sorry, you have no uploaded files!'
         context.bot.send_message(chat_id=update.message.chat_id, text=text)
 
+@family
+def rename(update, context):
+    chat_id = update.message.chat_id
+    username = FAMILY_IDS[chat_id]
+    file_path = f'{FILE_ROOT}/{username}'
+    files = os.listdir(file_path)
+    if len(files) > 0:
+        if len(context.args) == 2 and context.args[0].isdigit():
+            index, new_name = int(context.args[0]), context.args[1]
+            if index < len(files):
+                old_name = files[index - 1]
+                os.rename(f'{FILE_ROOT}/{username}/{old_name}', f'{FILE_ROOT}/{username}/{new_name}')
+                text = f'Renamed file:\n`* {old_name} -> {new_name}`'
+                context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+            else:
+                text = f'Can\'t find file with index: {index}.\nNothing has been renamed!'
+                context.bot.send_message(chat_id=update.message.chat_id, text=text)
+        else:
+            text = 'Please use following format: `/rename {index} {new_name}`'
+            context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+    else:
+        text = 'Sorry, you have no uploaded files!'
+        context.bot.send_message(chat_id=update.message.chat_id, text=text)
+
 
 def main():
     with open('.token') as f:
@@ -182,6 +206,7 @@ def main():
     dispatcher.add_handler(CommandHandler('service', service))
     dispatcher.add_handler(CommandHandler('files', files))
     dispatcher.add_handler(CommandHandler('delete', delete))
+    dispatcher.add_handler(CommandHandler('rename', rename))
     dispatcher.add_handler(MessageHandler(Filters.document, upload));
     updater.start_polling()
 
