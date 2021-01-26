@@ -178,7 +178,7 @@ def rename(update, context):
     if len(files) > 0:
         if len(context.args) == 2 and context.args[0].isdigit():
             index, new_name = int(context.args[0]), context.args[1]
-            if index < len(files):
+            if index - 1 < len(files) and index > 0:
                 old_name = files[index - 1]
                 os.rename(f'{FILE_ROOT}/{username}/{old_name}', f'{FILE_ROOT}/{username}/{new_name}')
                 text = f'Renamed file:\n`* {old_name} -> {new_name}`'
