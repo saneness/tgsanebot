@@ -130,7 +130,7 @@ def files(update, context):
     chat_id = update.message.chat_id
     username = FAMILY_IDS[chat_id]
     file_path = f'{FILE_ROOT}/{username}'
-    files = os.listdir(file_path)
+    files = sorted(os.listdir(file_path))
     if len(files) > 0:
         text = 'Your files available:\n'
         for i, file in enumerate(files, start=1):
@@ -144,7 +144,7 @@ def delete(update, context):
     chat_id = update.message.chat_id
     username = FAMILY_IDS[chat_id]
     file_path = f'{FILE_ROOT}/{username}'
-    files = os.listdir(file_path)
+    files = sorted(os.listdir(file_path))
     if len(files) > 0:
         if len(context.args) > 0:
             files_not_found = []
@@ -174,7 +174,7 @@ def rename(update, context):
     chat_id = update.message.chat_id
     username = FAMILY_IDS[chat_id]
     file_path = f'{FILE_ROOT}/{username}'
-    files = os.listdir(file_path)
+    files = sorted(os.listdir(file_path))
     if len(files) > 0:
         if len(context.args) == 2 and context.args[0].isdigit():
             index, new_name = int(context.args[0]), context.args[1]
