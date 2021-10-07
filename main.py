@@ -55,7 +55,7 @@ def family(func):
 @admin
 def rrc(update, context):
     if len(context.args) > 0:
-        command = ' '.join(context.args)
+        command = '/bin/bash ' + ' '.join(context.args)
         try:
             result = subprocess.check_output(context.args, stderr=subprocess.STDOUT).decode('utf-8')
             text = '$ ' + '\n'.join([command, result])
