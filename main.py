@@ -30,7 +30,7 @@ class Utils:
         return '\n'.join(table)
 
 
-def admin(func):
+def admins(func):
     @wraps(func)
     def wrapper(update, context, *args, **kwargs):
         chat_id = update.message.chat_id
@@ -41,18 +41,18 @@ def admin(func):
         return func(update, context, *args, **kwargs)
     return wrapper
 
-def family(func):
+def uploads(func):
     @wraps(func)
     def wrapper(update, context, *args, **kwargs):
         chat_id = update.message.chat_id
-        if chat_id not in FAMILY_IDS:
+        if chat_id not in UPLOAD_IDS:
             text = 'Permission denied.'
             context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
             return
         return func(update, context, *args, **kwargs)
     return wrapper
 
-@admin
+@admins
 def rrc(update, context):
     if len(context.args) > 0:
         command = '/bin/bash ' + ' '.join(context.args)
@@ -76,48 +76,24 @@ def start(update, context):
     text = 'I\'m a `TGSaneBot`! What do you want?'
     context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
 
-@admin
-def system(update, context):
-    memory = psutil.virtual_memory()
-    memory_used = memory.used / 1024 / 1024
-    memory_total = memory.total / 1024 / 1024
-    disk = psutil.disk_usage('/')
-    disk_used = disk.used / 1024 / 1024 / 1024
-    disk_total = disk.total / 1024 / 1024 / 1024
-    system_status = [
-        ['memory', f'{memory_used:.2f} / {memory_total:.2f} MB'],
-        ['disk', f'{disk_used:.2f} / {disk_total:.2f} GB']
-    ]
-    text = Utils.table(system_status, header=['system', 'status'], widths=[8, 18])
-    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
-
-@admin
-def service(update, context):
-    def get_status(service):
-        return str(subprocess.call(['systemctl', 'is-active', '--quiet', service]))
-
-    status = {'0': 'running', '1': 'error', '3': 'stopped'}
-    service_list = ['nginx', 'openvpn', 'tgsanebot']
-    service_status = [[service, status[get_status(service)]] for service in service_list]
-    text = Utils.table(service_status, header=['service', 'status'], widths=[12, 10])
-    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
-
-@family
+@uploads
 def upload(update, context):
     disk = psutil.disk_usage('/')
     if 100.0 * (disk.used + update.message.effective_attachment.file_size) / disk.total < MAX_DISK_USAGE:
         chat_id = update.message.chat_id
-        username = FAMILY_IDS[chat_id]
+        username = UPLOAD_IDS[chat_id]
+        file_path = f'{FILE_ROOT}'
+        domain_path = f'{DOMAIN_ROOT}'
         message_id = update.message.message_id
         file_id = update.message.effective_attachment.file_id
         file_name = update.message.effective_attachment.file_name.replace(' ', '_')
         file_data = context.bot.get_file(file_id)
-        if not os.path.exists(f'{FILE_ROOT}/{username}/'):
-            os.makedirs(f'{FILE_ROOT}/{username}/')
-        file_path = f'{FILE_ROOT}/{username}/{file_name}'
-        file_data.download(file_path)
+        if not os.path.exists(f'{file_path}/'):
+            os.makedirs(f'{file_path}/')
+        file_location = f'{file_path}/{file_name}'
+        file_data.download(file_location)
         text = 'Upload complete!\n' \
-            f'Your file location: {DOMAIN_ROOT}/{username}/{file_name}'
+            f'Your file location: {domain_path}/{file_name}'
         context.bot.delete_message(chat_id=chat_id,
                                     message_id=message_id)
         context.bot.send_message(chat_id=chat_id, text=text, disable_web_page_preview=True)
@@ -125,26 +101,27 @@ def upload(update, context):
         text = f'Disk usage is over {MAX_DISK_USAGE}%. Please ask the administrator to free some space before trying again!'
         context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
-@family
+@uploads
 def files(update, context):
     chat_id = update.message.chat_id
-    username = FAMILY_IDS[chat_id]
-    file_path = f'{FILE_ROOT}/{username}'
-    files = sorted(os.listdir(file_path))
+    username = UPLOAD_IDS[chat_id]
+    file_path = f'{FILE_ROOT}'
+    domain_path = f'{DOMAIN_ROOT}'
+    files = sorted([file for file in os.listdir(file_path) if file[0] != '.'])
     if len(files) > 0:
         text = 'Your files available:\n'
         for i, file in enumerate(files, start=1):
-            text += f'`({i})` [{file}]({DOMAIN_ROOT}/{username}/{file})\n'
+            text += f'`({i})` [{file}]({domain_path}/{file})\n'
     else:
         text = 'Sorry, you have no uploaded files!'
     context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN, disable_web_page_preview=True)
 
-@family
+@uploads
 def delete(update, context):
     chat_id = update.message.chat_id
-    username = FAMILY_IDS[chat_id]
-    file_path = f'{FILE_ROOT}/{username}'
-    files = sorted(os.listdir(file_path))
+    username = UPLOAD_IDS[chat_id]
+    file_path = f'{FILE_ROOT}'
+    files = sorted([file for file in os.listdir(file_path) if file[0] != '.'])
     if len(files) > 0:
         if len(context.args) > 0:
             files_not_found = []
@@ -159,7 +136,7 @@ def delete(update, context):
                 context.bot.send_message(chat_id=update.message.chat_id, text=text)
             else:
                 for file in files_found:
-                    os.remove(f'{FILE_ROOT}/{username}/{file}')
+                    os.remove(f'{file_path}/{file}')
                 text = 'Deleted files:\n`* ' + '`\n`* '.join(files_found) + '`'
                 context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
         else:
@@ -169,18 +146,18 @@ def delete(update, context):
         text = 'Sorry, you have no uploaded files!'
         context.bot.send_message(chat_id=update.message.chat_id, text=text)
 
-@family
+@uploads
 def rename(update, context):
     chat_id = update.message.chat_id
-    username = FAMILY_IDS[chat_id]
-    file_path = f'{FILE_ROOT}/{username}'
-    files = sorted(os.listdir(file_path))
+    username = UPLOAD_IDS[chat_id]
+    file_path = f'{FILE_ROOT}'
+    files = sorted([file for file in os.listdir(file_path) if file[0] != '.'])
     if len(files) > 0:
         if len(context.args) == 2 and context.args[0].isdigit():
             index, new_name = int(context.args[0]), context.args[1]
             if index - 1 < len(files) and index > 0:
                 old_name = files[index - 1]
-                os.rename(f'{FILE_ROOT}/{username}/{old_name}', f'{FILE_ROOT}/{username}/{new_name}')
+                os.rename(f'{file_path}/{old_name}', f'{file_path}/{new_name}')
                 text = f'Renamed file:\n`* {old_name} -> {new_name}`'
                 context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
             else:
@@ -202,8 +179,6 @@ def main():
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('rrc', rrc))
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(CommandHandler('system', system))
-    dispatcher.add_handler(CommandHandler('service', service))
     dispatcher.add_handler(CommandHandler('files', files))
     dispatcher.add_handler(CommandHandler('delete', delete))
     dispatcher.add_handler(CommandHandler('rename', rename))
