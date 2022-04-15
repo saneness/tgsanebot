@@ -55,21 +55,34 @@ def uploads(func):
 @admins
 def rrc(update, context):
     if len(context.args) > 0:
-        command = '/bin/bash ' + ' '.join(context.args)
+        command = ' '.join(context.args)
         try:
-            result = subprocess.check_output(context.args, stderr=subprocess.STDOUT).decode('utf-8')
-            text = '$ ' + '\n'.join([command, result])
+            result = subprocess.check_output(command.split(), stderr=subprocess.STDOUT).decode('utf-8')
         except subprocess.CalledProcessError as err:
-            text = '$ ' + '\n'.join([command, err.output.decode('utf-8')])
+            result = err.output.decode('utf-8')
         except Exception as err:
-            text = '$ ' + '\n'.join([command, str(err)])
+            result = str(err)
         except:
-            text = '$ ' + '\n'.join([command, 'Something went wrong.'])
+            result = 'Something went wrong.'
     else:
-        text = 'Empty command. Nothing to do.'
-    context.bot.delete_message(chat_id=update.message.chat_id,
-                               message_id=update.message.message_id)
-    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
+        result = 'Empty command. Nothing to do.'
+    context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(command), parse_mode=telegram.ParseMode.MARKDOWN)
+    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=telegram.ParseMode.MARKDOWN)
+
+@admins
+def pxlpass(update, context):
+    command = 'cat /root/.pxlpass'
+    try:
+        result = subprocess.check_output(command.split(), stderr=subprocess.STDOUT).decode('utf-8')
+    except subprocess.CalledProcessError as err:
+        result = err.output.decode('utf-8')
+    except Exception as err:
+        result = str(err)
+    except:
+        result = 'Something went wrong.'
+    context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=telegram.ParseMode.MARKDOWN)
 
 def start(update, context):
     reply_markup = telegram.ReplyKeyboardRemove()
@@ -94,8 +107,7 @@ def upload(update, context):
         file_data.download(file_location)
         text = 'Upload complete!\n' \
             f'Your file location: {domain_path}/{file_name}'
-        context.bot.delete_message(chat_id=chat_id,
-                                    message_id=message_id)
+        context.bot.delete_message(chat_id=chat_id, message_id=message_id)
         context.bot.send_message(chat_id=chat_id, text=text, disable_web_page_preview=True)
     else:
         text = f'Disk usage is over {MAX_DISK_USAGE}%. Please ask the administrator to free some space before trying again!'
@@ -178,6 +190,7 @@ def main():
     updater = Updater(token=token, use_context=True)
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('rrc', rrc))
+    dispatcher.add_handler(CommandHandler('pxlpass', pxlpass))
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(CommandHandler('files', files))
     dispatcher.add_handler(CommandHandler('delete', delete))
