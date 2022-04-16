@@ -82,7 +82,9 @@ def pxlpass(update, context):
     except:
         result = 'Something went wrong.'
     context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=telegram.ParseMode.MARKDOWN)
+    message_result = context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=telegram.ParseMode.MARKDOWN)
+    time.sleep(10)
+    context.bot.delete_message(chat_id=update.message.chat_id, message_id=message_result.message_id)
 
 def start(update, context):
     reply_markup = telegram.ReplyKeyboardRemove()
