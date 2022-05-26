@@ -221,7 +221,10 @@ def pxlpass(update, context):
 @admins
 def routes(update, context):
     config = yaml.load(open(ROUTES_CONFIG).read(), Loader=yaml.Loader)
-    text = '\n'.join(config['domains'])
+    if len(config['domains']) > 0:
+        text = '\n'.join(config['domains'])
+    else:
+        text = 'No routes are found.'
     context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
 
 @admins
