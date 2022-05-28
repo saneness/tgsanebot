@@ -23,10 +23,11 @@ def help(update, context):
         '`/rm ` remove file(s)\n' \
         '`/mv ` move file\n' \
         '`(to upload a file just send it)`\n\n' \
-        '`admin commands:`\n' \
-        '`/rrc     ` run remote command\n' \
-        '`/pxlpass ` show pxl password\n' \
+        '`route commands:`\n' \
         '`/routes  ` list routed domains\n' \
         '`/add     ` add domain(s) to routing\n' \
-        '`/remove  ` remove domain(s) from routing'
+        '`/remove  ` remove domain(s) from routing\n\n' \
+        '`admin commands:`\n' \
+        '`/rrc     ` run remote command\n' \
+        '`/pxlpass ` show pxl password'
     context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
