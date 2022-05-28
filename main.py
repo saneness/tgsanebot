@@ -5,6 +5,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from commands.common import *
 from commands.upload import *
+from commands.route import *
 from commands.admin import *
 
 def main():
@@ -26,12 +27,14 @@ def main():
     dispatcher.add_handler(CommandHandler('rm', rm))
     dispatcher.add_handler(CommandHandler('mv', mv))
 
-    # ADMIN COMMANDS
-    dispatcher.add_handler(CommandHandler('rrc', rrc))
-    dispatcher.add_handler(CommandHandler('pxlpass', pxlpass))
+    # ROUTE COMMANDS
     dispatcher.add_handler(CommandHandler('routes', routes))
     dispatcher.add_handler(CommandHandler('add', add))
     dispatcher.add_handler(CommandHandler('remove', remove))
+
+    # ADMIN COMMANDS
+    dispatcher.add_handler(CommandHandler('rrc', rrc))
+    dispatcher.add_handler(CommandHandler('pxlpass', pxlpass))
     updater.start_polling()
 
 if __name__ == '__main__':
