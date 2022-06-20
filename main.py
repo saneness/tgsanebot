@@ -13,7 +13,7 @@ def main():
 
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/pisie/tgsanebot.log', filemode='w+')
 
-    application = Application.builder().token(token).build()
+    application = Application.builder().base_url('http://localhost:8081/bot').token(token).build()
 
     # COMMON COMMANDS
     application.add_handler(CommandHandler('start', start))

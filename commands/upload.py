@@ -19,11 +19,11 @@ async def document(update, context):
         message_id = update.message.message_id
         file_id = update.message.effective_attachment.file_id
         file_name = update.message.effective_attachment.file_name.replace(' ', '_')
-        file_data = await context.bot.get_file(file_id)
+        file_data = await context.bot.get_file(file_id, read_timeout=300)
         if not os.path.exists(f'{file_path}/'):
             os.makedirs(f'{file_path}/')
         file_location = f'{file_path}/{file_name}'
-        await file_data.download(file_location)
+        os.rename(file_data['file_path'], file_location)
         text = 'Upload complete!\n' \
             f'Your file location: {domain_path}/{file_name}'
         await context.bot.delete_message(chat_id=update.message.chat_id, message_id=message_id)
