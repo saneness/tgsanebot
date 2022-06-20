@@ -19,7 +19,7 @@ async def document(update, context):
         message_id = update.message.message_id
         file_id = update.message.effective_attachment.file_id
         file_name = update.message.effective_attachment.file_name.replace(' ', '_')
-        file_data = await context.bot.get_file(file_id, read_timeout=300)
+        file_data = await context.bot.get_file(file_id, read_timeout=1800)
         if not os.path.exists(f'{file_path}/'):
             os.makedirs(f'{file_path}/')
         file_location = f'{file_path}/{file_name}'
