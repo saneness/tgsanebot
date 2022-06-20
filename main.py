@@ -1,7 +1,6 @@
 import logging
 
-from telegram import bot
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 from commands.common import *
 from commands.upload import *
@@ -14,28 +13,28 @@ def main():
 
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/pisie/tgsanebot.log', filemode='w+')
 
-    updater = Updater(token=token, use_context=True)
-    dispatcher = updater.dispatcher
+    application = Application.builder().token(token).build()
 
     # COMMON COMMANDS
-    dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(CommandHandler('help', help))
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(CommandHandler('help', help))
 
     # UPLOAD COMMANDS
-    dispatcher.add_handler(MessageHandler(Filters.document, document))
-    dispatcher.add_handler(CommandHandler('ls', ls))
-    dispatcher.add_handler(CommandHandler('rm', rm))
-    dispatcher.add_handler(CommandHandler('mv', mv))
+    application.add_handler(MessageHandler(filters.Document.ALL, document))
+    application.add_handler(CommandHandler('ls', ls))
+    application.add_handler(CommandHandler('rm', rm))
+    application.add_handler(CommandHandler('mv', mv))
 
     # ROUTE COMMANDS
-    dispatcher.add_handler(CommandHandler('routes', routes))
-    dispatcher.add_handler(CommandHandler('add', add))
-    dispatcher.add_handler(CommandHandler('remove', remove))
+    application.add_handler(CommandHandler('routes', routes))
+    application.add_handler(CommandHandler('add', add))
+    application.add_handler(CommandHandler('remove', remove))
 
     # ADMIN COMMANDS
-    dispatcher.add_handler(CommandHandler('rrc', rrc))
-    dispatcher.add_handler(CommandHandler('pxlpass', pxlpass))
-    updater.start_polling()
+    application.add_handler(CommandHandler('rrc', rrc))
+    application.add_handler(CommandHandler('pxlpass', pxlpass))
+
+    application.run_polling()
 
 if __name__ == '__main__':
     main()

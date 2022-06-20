@@ -1,16 +1,17 @@
 import telegram
+from telegram.constants import ParseMode
 
+import asyncio
 import subprocess
-import time
 
 from config import *
 from commands.utils import *
 from functools import partial
 
-admin = partial(Utils.whitelist, ids=ADMIN_IDS)
+admin = partial(whitelist, ids=ADMIN_IDS)
 
 @admin
-def rrc(update, context):
+async def rrc(update, context):
     if len(context.args) > 0:
         command = ' '.join(context.args)
         try:
@@ -23,12 +24,12 @@ def rrc(update, context):
             result = 'Something went wrong.'
     else:
         result = 'Empty command. Nothing to do.'
-    context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(command), parse_mode=telegram.ParseMode.MARKDOWN)
-    context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=telegram.ParseMode.MARKDOWN)
+    await context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    await context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(command), parse_mode=ParseMode.MARKDOWN)
+    await context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=ParseMode.MARKDOWN)
 
 @admin
-def pxlpass(update, context):
+async def pxlpass(update, context):
     command = 'cat /root/.pxlpass'
     try:
         result = subprocess.check_output(command.split(), stderr=subprocess.STDOUT).decode('utf-8')
@@ -38,7 +39,7 @@ def pxlpass(update, context):
         result = str(err)
     except:
         result = 'Something went wrong.'
-    context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-    message_result = context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=telegram.ParseMode.MARKDOWN)
-    time.sleep(10)
-    context.bot.delete_message(chat_id=update.message.chat_id, message_id=message_result.message_id)
+    await context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    message_result = await context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=ParseMode.MARKDOWN)
+    await asyncio.sleep(10)
+    await context.bot.delete_message(chat_id=update.message.chat_id, message_id=message_result.message_id)

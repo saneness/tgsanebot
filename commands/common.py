@@ -1,19 +1,20 @@
 import telegram
+from telegram.constants import ParseMode
 
 from config import *
 from commands.utils import *
 from functools import partial
 
-common = partial(Utils.whitelist, ids=COMMON_IDS)
+common = partial(whitelist, ids=COMMON_IDS)
 
 @common
-def start(update, context):
+async def start(update, context):
     reply_markup = telegram.ReplyKeyboardRemove()
     text = 'I\'m a `TGSaneBot`! What do you want?'
-    context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+    await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN, reply_markup=reply_markup)
 
 @common
-def help(update, context):
+async def help(update, context):
     text = \
         '`common commands:`\n' \
         '`/start ` (re)start bot\n' \
@@ -30,4 +31,4 @@ def help(update, context):
         '`admin commands:`\n' \
         '`/rrc     ` run remote command\n' \
         '`/pxlpass ` show pxl password'
-    context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+    await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)

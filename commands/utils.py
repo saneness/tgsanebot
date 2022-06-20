@@ -1,4 +1,5 @@
 import telegram
+from telegram.constants import ParseMode
 
 from functools import wraps
 
@@ -19,14 +20,13 @@ class Utils:
             table += ['|'.join([f' {item[i]:{widths[i]}s}' for i in range(n)])]
         return '\n'.join(table)
 
-    @staticmethod
-    def whitelist(func, ids):
-        @wraps(func)
-        def wrapper(update, context, *args, **kwargs):
-            chat_id = update.message.chat_id
-            if chat_id not in ids:
-                text = 'Permission denied.'
-                context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=telegram.ParseMode.MARKDOWN)
-                return
-            return func(update, context, *args, **kwargs)
-        return wrapper
+def whitelist(func, ids):
+    @wraps(func)
+    async def wrapper(update, context, *args, **kwargs):
+        chat_id = update.message.chat_id
+        if chat_id not in ids:
+            text = 'Permission denied.'
+            await context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=ParseMode.MARKDOWN)
+            return
+        return await func(update, context, *args, **kwargs)
+    return wrapper
