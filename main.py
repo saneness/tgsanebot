@@ -4,7 +4,6 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 from commands.common import *
 from commands.upload import *
-from commands.route import *
 from commands.admin import *
 
 def main():
@@ -24,11 +23,6 @@ def main():
     application.add_handler(CommandHandler('ls', ls))
     application.add_handler(CommandHandler('rm', rm))
     application.add_handler(CommandHandler('mv', mv))
-
-    # ROUTE COMMANDS
-    application.add_handler(CommandHandler('routes', routes))
-    application.add_handler(CommandHandler('add', add))
-    application.add_handler(CommandHandler('remove', remove))
 
     # ADMIN COMMANDS
     application.add_handler(CommandHandler('rrc', rrc))

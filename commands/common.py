@@ -24,10 +24,6 @@ async def help(update, context):
         '`/rm ` remove file(s)\n' \
         '`/mv ` move file\n' \
         '`(to upload a file just send it)`\n\n' \
-        '`route commands:`\n' \
-        '`/routes  ` list routed domains\n' \
-        '`/add     ` add domain(s) to routing\n' \
-        '`/remove  ` remove domain(s) from routing\n\n' \
         '`admin commands:`\n' \
         '`/rrc     ` run remote command\n' \
         '`/pxlpass ` show pxl password'
