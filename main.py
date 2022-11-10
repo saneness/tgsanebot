@@ -27,6 +27,7 @@ def main():
     # ADMIN COMMANDS
     application.add_handler(CommandHandler('rrc', rrc))
     application.add_handler(CommandHandler('pxlpass', pxlpass))
+    application.add_handler(CommandHandler('wol', wol))
 
     application.run_polling()
 
