@@ -26,5 +26,6 @@ async def help(update, context):
         '`(to upload a file just send it)`\n\n' \
         '`admin commands:`\n' \
         '`/rrc     ` run remote command\n' \
-        '`/pxlpass ` show pxl password'
+        '`/pxlpass ` show pxl password'\n' \
+        '`/wol ` start pc'
     await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
