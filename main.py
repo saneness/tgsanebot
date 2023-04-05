@@ -19,7 +19,7 @@ def main():
     application.add_handler(CommandHandler('help', help))
 
     # UPLOAD COMMANDS
-    application.add_handler(MessageHandler(filters.Document.ALL, document))
+    application.add_handler(MessageHandler(filters.Document.ALL | filters.ANIMATION | filters.AUDIO | filters.VIDEO, document))
     application.add_handler(CommandHandler('ls', ls))
     application.add_handler(CommandHandler('rm', rm))
     application.add_handler(CommandHandler('mv', mv))
