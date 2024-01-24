@@ -5,8 +5,8 @@ from functools import wraps
 
 class Utils:
     @staticmethod
-    def pre(text):
-        return '```\n' + text + '\n```'
+    def pre(text, title='result'):
+        return f'```{title}\n' + text + '\n```'
 
     @staticmethod
     def table(array, header=None, widths=None):
