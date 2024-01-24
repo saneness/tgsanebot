@@ -45,8 +45,8 @@ async def wol(update, context):
 
 @admin
 async def status(update, context):
-    os.environ['PYTHONPATH']='/var/lib/pisie/tgsanebot/venv/lib/python3.10/site-packages/'
-    command = 'python3 /usr/local/bin/monitor -c'
+    os.environ['PYTHONPATH']=PYTHONPATH
+    command = 'monitor -c'
     try:
         result = subprocess.check_output(command.split(), stderr=subprocess.STDOUT).decode('utf-8')
     except subprocess.CalledProcessError as err:
