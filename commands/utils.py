@@ -30,3 +30,14 @@ def whitelist(func, ids):
             return
         return await func(update, context, *args, **kwargs)
     return wrapper
+
+def blacklist(func, ids):
+    @wraps(func)
+    async def wrapper(update, context, *args, **kwargs):
+        chat_id = update.message.chat_id
+        if chat_id in ids:
+            text = 'Permission denied.'
+            await context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=ParseMode.MARKDOWN)
+            return
+        return await func(update, context, *args, **kwargs)
+    return wrapper
