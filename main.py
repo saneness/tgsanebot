@@ -27,6 +27,7 @@ def main():
 
     # OPENAI COMMANDS
     application.add_handler(CommandHandler('image', image))
+    application.add_handler(CommandHandler('image_w', image_w))
 
     # ADMIN COMMANDS
     application.add_handler(CommandHandler('rrc', rrc))

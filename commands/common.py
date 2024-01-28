@@ -18,9 +18,11 @@ async def help(update, context):
     text = \
         '`common commands:`\n' \
         '`/start   ` (re)start bot\n' \
-        '`/help    ` show this message\n\n' \
+        '`/help    ` show this message\n' \
+        '`/status  ` show host status\n\n' \
         '`openai commands:`\n' \
-        '`/image   ` generate image from prompt\n\n' \
+        '`/image   ` generate image from prompt\n' \
+        '`/image_w ` generate wide image from prompt\n\n' \
         '`upload commands:`\n' \
         '`/ls      ` list file(s)\n' \
         '`/rm      ` remove file(s)\n' \
@@ -28,8 +30,7 @@ async def help(update, context):
         '`(to upload a file just send it)`\n\n' \
         '`admin commands:`\n' \
         '`/rrc     ` run remote command\n' \
-        '`/wol     ` start pc\n' \
-        '`/status  ` show host status'
+        '`/wol     ` start pc'
     await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
 
 @common
