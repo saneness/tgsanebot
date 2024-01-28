@@ -17,13 +17,15 @@ async def start(update, context):
 async def help(update, context):
     text = \
         '`common commands:`\n' \
-        '`/start ` (re)start bot\n' \
-        '`/help  ` show this message\n\n' \
+        '`/start   ` (re)start bot\n' \
+        '`/help    ` show this message\n\n' \
         '`upload commands:`\n' \
-        '`/ls ` list file(s)\n' \
-        '`/rm ` remove file(s)\n' \
-        '`/mv ` move file\n' \
+        '`/ls      ` list file(s)\n' \
+        '`/rm      ` remove file(s)\n' \
+        '`/mv      ` move file\n' \
         '`(to upload a file just send it)`\n\n' \
+        '`openai commands:`\n' \
+        '`/image   ` generate image from prompt\n\n' \
         '`admin commands:`\n' \
         '`/rrc     ` run remote command\n' \
         '`/wol     ` start pc\n' \

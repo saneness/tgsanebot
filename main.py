@@ -4,6 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 from commands.common import *
 from commands.upload import *
+from commands.openai import *
 from commands.admin import *
 
 def main():
@@ -23,6 +24,9 @@ def main():
     application.add_handler(CommandHandler('ls', ls))
     application.add_handler(CommandHandler('rm', rm))
     application.add_handler(CommandHandler('mv', mv))
+
+    # OPENAI COMMANDS
+    application.add_handler(CommandHandler('image', image))
 
     # ADMIN COMMANDS
     application.add_handler(CommandHandler('rrc', rrc))
