@@ -22,8 +22,10 @@ async def image(update, context):
             text = subprocess.check_output(command, stderr=subprocess.STDOUT).decode('utf-8')
         else:
             text = 'Please use following format: `/image {text}`'
-    except:
-        os.environ['PYTHONPATH']=''
-        os.environ['OPENAI_API_KEY']=''
-        text = 'Something went wrong.'
+    except subprocess.CalledProcessError as err:
+        text = Utils.pre(err.output.decode('utf8'))
+    except e:
+        text = Utils.pre(err.output.decode('utf8'))
+    os.environ['PYTHONPATH']=''
+    os.environ['OPENAI_API_KEY']=''
     await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
