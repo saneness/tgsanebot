@@ -1,6 +1,9 @@
 import telegram
 from telegram.constants import ParseMode
 
+import os
+import subprocess
+
 from config import *
 from commands.utils import *
 from functools import partial
