@@ -41,7 +41,7 @@ async def image_w(update, context):
             await context.bot.send_message(chat_id=update.message.chat_id, text='Generating image... Please wait...')
             text = subprocess.check_output(command, stderr=subprocess.STDOUT).decode('utf-8')
         else:
-            text = 'Please use following format: `/image {text}`'
+            text = 'Please use following format: `/image_w {text}`'
     except subprocess.CalledProcessError as err:
         text = Utils.pre(err.output.decode('utf8'))
     except e:
