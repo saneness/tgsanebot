@@ -1,12 +1,9 @@
 import telegram
 from telegram.constants import ParseMode
-
-import os
-import subprocess
-
-from config import *
-from commands.utils import *
 from functools import partial
+from commands.utils import *
+from config import *
+import subprocess
 
 common = partial(blacklist, ids=COMMON_IDS_BLACKLIST)
 
@@ -38,7 +35,6 @@ async def help(update, context):
 
 @common
 async def status(update, context):
-    os.environ['PYTHONPATH']=PYTHONPATH
     command = 'monitor -c'
     try:
         result = subprocess.check_output(command.split(), stderr=subprocess.STDOUT).decode('utf-8')
@@ -48,6 +44,4 @@ async def status(update, context):
         result = str(err)
     except:
         result = 'Something went wrong.'
-    os.environ['PYTHONPATH']=''
-    # await context.bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
     message_result = await context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=ParseMode.MARKDOWN)

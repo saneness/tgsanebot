@@ -1,6 +1,5 @@
 import telegram
 from telegram.constants import ParseMode
-
 from functools import wraps
 
 class Utils:
