@@ -19,7 +19,7 @@ async def image(update, context):
             text = 'Please use following format: `/image {text}`'
     except subprocess.CalledProcessError as err:
         text = Utils.pre(err.output.decode('utf8'))
-    except e:
+    except Exception as err:
         text = Utils.pre(err.output.decode('utf8'))
     await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
 
@@ -27,8 +27,6 @@ async def image(update, context):
 async def image_w(update, context):
     try:
         if len(context.args) > 0:
-            os.environ['PYTHONPATH']=PYTHONPATH
-            os.environ['OPENAI_API_KEY']=open(OPENAI_TOKEN).read().strip()
             prompt = f'"{" ".join(context.args)}"'
             command = ['generate_image', '-s', '1792x1024', '-p', f'{prompt}']
             await context.bot.send_message(chat_id=update.message.chat_id, text='Generating image... Please wait...')
@@ -37,6 +35,6 @@ async def image_w(update, context):
             text = 'Please use following format: `/image_w {text}`'
     except subprocess.CalledProcessError as err:
         text = Utils.pre(err.output.decode('utf8'))
-    except e:
+    except Exception as err:
         text = Utils.pre(err.output.decode('utf8'))
     await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
