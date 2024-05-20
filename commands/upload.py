@@ -1,12 +1,10 @@
 import telegram
 from telegram.constants import ParseMode
-
+from functools import partial
+from commands.utils import *
+from config import *
 import os
 import psutil
-
-from config import *
-from commands.utils import *
-from functools import partial
 
 upload = partial(whitelist, ids=UPLOAD_IDS)
 

@@ -1,12 +1,11 @@
 import telegram
 from telegram.constants import ParseMode
-
 from functools import wraps
 
 class Utils:
     @staticmethod
-    def pre(text):
-        return '```\n' + text + '\n```'
+    def pre(text, title='result'):
+        return f'```{title}\n' + text + '\n```'
 
     @staticmethod
     def table(array, header=None, widths=None):
@@ -25,6 +24,17 @@ def whitelist(func, ids):
     async def wrapper(update, context, *args, **kwargs):
         chat_id = update.message.chat_id
         if chat_id not in ids:
+            text = 'Permission denied.'
+            await context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=ParseMode.MARKDOWN)
+            return
+        return await func(update, context, *args, **kwargs)
+    return wrapper
+
+def blacklist(func, ids):
+    @wraps(func)
+    async def wrapper(update, context, *args, **kwargs):
+        chat_id = update.message.chat_id
+        if chat_id in ids:
             text = 'Permission denied.'
             await context.bot.send_message(chat_id=chat_id, text=Utils.pre(text), parse_mode=ParseMode.MARKDOWN)
             return
