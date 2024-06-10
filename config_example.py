@@ -19,6 +19,7 @@ ADMIN_IDS = [
 ]
 
 WORK_DIR = 'WORK_DIR'
+LOG_FILE = 'LOG_FILE'
 
 MAX_DISK_USAGE     = 90
 FILE_ROOT          = 'FILE_ROOT'
