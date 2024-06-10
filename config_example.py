@@ -1,0 +1,29 @@
+USERS = {
+    'NAME': ID
+}
+
+COMMON_IDS_BLACKLIST = [
+    'NAME': ID
+]
+
+UPLOAD_IDS = [
+    USERS['NAME']
+]
+
+OPENAI_IDS = [
+    USERS['NAME']
+]
+
+ADMIN_IDS = [
+    USERS['NAME']
+]
+
+WORK_DIR = 'WORK_DIR'
+
+MAX_DISK_USAGE     = 90
+FILE_ROOT          = 'FILE_ROOT'
+DOMAIN_ROOT        = 'DOMAIN_ROOT'
+ROUTES_CONFIG      = 'ROUTES_CONFING' # legacy for me
+ROUTES_UPDATE      = 'ROUTES_UPDATE'  # legacy for me
+PYTHONPATH         = 'PYTHONPATH'
+OPENAI_API_KEY     = 'OPENAI_API_KEY'
