@@ -15,7 +15,7 @@ def main():
     os.environ['PYTHONPATH']=PYTHONPATH
     os.environ['OPENAI_API_KEY']=open(OPENAI_API_KEY).read().strip()
 
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename='/var/log/pisie/tgsanebot.log', filemode='w+')
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename=LOG_FILE, filemode='w+')
 
     application = Application.builder().base_url('http://localhost:8081/bot').token(token).build()
 
