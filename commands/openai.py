@@ -8,6 +8,18 @@ import subprocess
 openai = partial(whitelist, ids=OPENAI_IDS)
 
 @openai
+async def message(update, context):
+    try:
+        prompt = f'"{update.message.text}"'
+        command = ['chat', '-p', f'{prompt}']
+        text = subprocess.check_output(command, stderr=subprocess.STDOUT).decode('utf-8')
+    except subprocess.CalledProcessError as err:
+        text = Utils.pre(err.output.decode('utf8'))
+    except Exception as err:
+        text = Utils.pre(err.output.decode('utf8'))
+    await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+
+@openai
 async def image(update, context):
     try:
         if len(context.args) > 0:

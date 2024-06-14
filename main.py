@@ -25,6 +25,7 @@ def main():
     application.add_handler(CommandHandler('status', status))
 
     # OPENAI COMMANDS
+    application.add_handler(MessageHandler(filters.TEXT, message))
     application.add_handler(CommandHandler('image', image))
     application.add_handler(CommandHandler('image_w', image_w))
 

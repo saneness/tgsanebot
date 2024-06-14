@@ -22,7 +22,8 @@ async def help(update, context):
         '`/status  ` show host status\n\n' \
         '`openai commands:`\n' \
         '`/image   ` generate image from prompt\n' \
-        '`/image_w ` generate wide image from prompt\n\n' \
+        '`/image_w ` generate wide image from prompt\n' \
+        '`(to have a chat just sent a message)`\n\n' \
         '`upload commands:`\n' \
         '`/ls      ` list file(s)\n' \
         '`/rm      ` remove file(s)\n' \
