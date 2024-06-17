@@ -11,7 +11,7 @@ openai = partial(whitelist, ids=OPENAI_IDS)
 async def message(update, context):
     try:
         prompt = f'"{update.message.text}"'
-        command = ['chat', '-p', f'{prompt}']
+        command = ['chat', '-u', f'{update.message.chat_id}', '-l', OPENAI_HISTORY, '-p', f'{prompt}']
         text = subprocess.check_output(command, stderr=subprocess.STDOUT).decode('utf-8')
     except subprocess.CalledProcessError as err:
         text = Utils.pre(err.output.decode('utf8'))
