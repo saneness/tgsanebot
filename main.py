@@ -25,12 +25,10 @@ def main():
     application.add_handler(CommandHandler('status', status))
 
     # OPENAI COMMANDS
-    application.add_handler(MessageHandler(filters.TEXT, message))
     application.add_handler(CommandHandler('image', image))
     application.add_handler(CommandHandler('image_w', image_w))
 
     # UPLOAD COMMANDS
-    application.add_handler(MessageHandler(filters.Document.ALL | filters.ANIMATION | filters.AUDIO | filters.VIDEO, document))
     application.add_handler(CommandHandler('ls', ls))
     application.add_handler(CommandHandler('rm', rm))
     application.add_handler(CommandHandler('mv', mv))
@@ -38,6 +36,10 @@ def main():
     # ADMIN COMMANDS
     application.add_handler(CommandHandler('rrc', rrc))
     application.add_handler(CommandHandler('wol', wol))
+
+    # MESSAGE HANDLERS
+    application.add_handler(MessageHandler(filters.Document.ALL | filters.ANIMATION | filters.AUDIO | filters.VIDEO, document))
+    application.add_handler(MessageHandler(filters.TEXT, message))
 
     application.run_polling()
 
