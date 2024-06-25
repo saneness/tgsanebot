@@ -9,15 +9,12 @@ import logging
 import os
 
 def main():
-    with open('.token') as f:
-        token = f.read().strip()
-
     os.environ['PYTHONPATH']=PYTHONPATH
     os.environ['OPENAI_API_KEY']=open(OPENAI_API_KEY).read().strip()
 
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG, filename=LOG_FILE, filemode='w+')
 
-    application = Application.builder().base_url('http://localhost:8081/bot').token(token).build()
+    application = Application.builder().base_url('http://localhost:8081/bot').token(BOT_TOKEN).build()
 
     # COMMON COMMANDS
     application.add_handler(CommandHandler('start', start))
