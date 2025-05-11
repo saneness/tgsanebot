@@ -24,6 +24,7 @@ def main():
     # OPENAI COMMANDS
     application.add_handler(CommandHandler('image', image))
     application.add_handler(CommandHandler('image_w', image_w))
+    application.add_handler(CommandHandler('clear', clear))
 
     # UPLOAD COMMANDS
     application.add_handler(CommandHandler('ls', ls))

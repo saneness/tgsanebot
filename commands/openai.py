@@ -50,3 +50,16 @@ async def image_w(update, context):
     except Exception as err:
         text = Utils.pre(err.output.decode('utf8'))
     await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+
+@openai
+async def clear(update, context):
+    try:
+        command = ['chat', '-u', f'{update.message.chat_id}', '-l', OPENAI_HISTORY, '-c']
+        print(command)
+        subprocess.check_output(command, stderr=subprocess.STDOUT).decode('utf-8')
+        text = 'Chat history has been cleared.'
+    except subprocess.CalledProcessError as err:
+        text = Utils.pre(err.output.decode('utf8'))
+    except Exception as err:
+        text = Utils.pre(err.output.decode('utf8'))
+    await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
