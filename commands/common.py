@@ -3,7 +3,6 @@ from telegram.constants import ParseMode
 from functools import partial
 from commands.utils import *
 from config import *
-import subprocess
 
 common = partial(blacklist, ids=COMMON_IDS_BLACKLIST)
 
@@ -37,13 +36,6 @@ async def help(update, context):
 
 @common
 async def status(update, context):
-    command = 'monitor -c'
-    try:
-        result = subprocess.check_output(command.split(), stderr=subprocess.STDOUT).decode('utf-8')
-    except subprocess.CalledProcessError as err:
-        result = err.output.decode('utf-8')
-    except Exception as err:
-        result = str(err)
-    except:
-        result = 'Something went wrong.'
-    message_result = await context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(result), parse_mode=ParseMode.MARKDOWN)
+    command = ['monitor', '-c']
+    text = Utils.subprocess(command)
+    message_result = await context.bot.send_message(chat_id=update.message.chat_id, text=Utils.pre(text), parse_mode=ParseMode.MARKDOWN)

@@ -1,6 +1,7 @@
 import telegram
 from telegram.constants import ParseMode
 from functools import wraps
+import subprocess
 
 class Utils:
     @staticmethod
@@ -18,6 +19,21 @@ class Utils:
         for item in array:
             table += ['|'.join([f' {item[i]:{widths[i]}s}' for i in range(n)])]
         return '\n'.join(table)
+
+    @staticmethod
+    def subprocess(command, default=None):
+        try:
+            text = subprocess.check_output(command, stderr=subprocess.STDOUT).decode('utf-8')
+        except subprocess.CalledProcessError as err:
+            text = err.output.decode('utf8')
+        except Exception as err:
+            text = err.output.decode('utf8')
+        except:
+            text = 'Something went wrong.'
+        if not default:
+            return text
+        else:
+            return default
 
 def whitelist(func, ids):
     @wraps(func)
