@@ -1,42 +1,46 @@
-## TGSaneBot
+# TGSaneBot
 
 This bot has been created to help me with managing personal activities.
 
-### How to start using this:
+---
 
-##### 1. Clone repository to your machine and go the project folder:
+## How to start using this:
+
+### 1. Clone repository to your machine and go the project folder:
 
 ```
 git clone https://github.com/saneness/tgsanebot.git
 cd tgsanebot/
 ```
 
-##### 2. Copy config_example.py to config.py and update all the required fields:
+### 2. Copy config_example.py to config.py and update all the required fields:
 
 ```
 cp config_example.py config.py
 ```
 
-##### 3. Create virtual environment:
+### 3. Create virtual environment:
 
 ```
 python -m venv venv/
 source venv/bin/activate
 ```
 
-##### 4. Install dependancies:
+### 4. Install dependancies:
 
 ```
 pip install -r requirements.txt
 ```
 
-##### 5. Run the main script:
+### 5. Run the main script:
 
 ```
 python main.py
 ```
 
-### Example of systemd service:
+---
+
+## Example of systemd service:
 
 ```
 [Unit]
