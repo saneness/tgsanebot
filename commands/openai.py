@@ -19,10 +19,11 @@ async def image(update, context):
         await context.bot.send_message(chat_id=update.message.chat_id, text='Generating image... Please wait...')
         prompt = f'"{" ".join(context.args)}"'
         command = ['generate_image', '-p', f'{prompt}']
-        text = Utils.subprocess(command)
+        photo = Utils.subprocess(command).strip()
+        await context.bot.send_photo(chat_id=update.message.chat_id, photo=photo)
     else:
         text = 'Please use following format: `/image {text}`'
-    await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+        await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
 
 @openai
 async def image_w(update, context):
@@ -30,10 +31,11 @@ async def image_w(update, context):
         await context.bot.send_message(chat_id=update.message.chat_id, text='Generating image... Please wait...')
         prompt = f'"{" ".join(context.args)}"'
         command = ['generate_image', '-s', '1792x1024', '-p', f'{prompt}']
-        text = Utils.subprocess(command)
+        photo = Utils.subprocess(command).strip()
+        await context.bot.send_photo(chat_id=update.message.chat_id, photo=photo)
     else:
         text = 'Please use following format: `/image_w {text}`'
-    await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+        await context.bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
 
 @openai
 async def clear(update, context):
